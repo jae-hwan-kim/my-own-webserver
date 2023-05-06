@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <exception>
 #include <fstream>
 #include <iostream>
 
@@ -17,8 +18,8 @@
 #include "ServerConfig.hpp"
 
 class Transaction {
-private:
-  int socket_fd; // client 랑 연결된 socket fd
+ private:
+  int socket_fd;  // client 랑 연결된 socket fd
   t_step flag;
 
   Response response;
@@ -27,11 +28,12 @@ private:
   const ServerConfig &server_config;
   ServerConfig::t_location location;
 
-  FILE *file_ptr;
+  std::string resource;
+  std::FILE *file_ptr;
 
   Transaction();
 
-public:
+ public:
   // ---- constructor -------------------------
   /// @brief Transaction 생성자
   /// @param socket_fd
@@ -41,6 +43,7 @@ public:
   // ---- getter ------------------------------
   Response &getResponse();
   Request &getRequest();
+  const ServerConfig &getServerConfig() const;
   const t_step &getFlag() const;
   const FILE *getFilePtr() const;
 
@@ -51,40 +54,37 @@ public:
   int checkResource(void);
   void checkAllowedMethod(void);
 
+  int CheckResourceFile(void);
+  int CheckResourceDir(void);
+
   // ---- executor ----------------------------
   int executeRead(void);
   int executeReadHead(char *, int);
   void executeReadEntity(char *, int, int);
   int executeWrite(void);
-  int executeMethod(void);
+  int executeMethod(int, int);
 
   // ---- http methods ------------------------
-  void httpGet(void);
+  void httpGet(int);
   void httpDelete(void);
-  void httpPost(void);
+  void httpPost(int);
 
-  // ---- safe-functions ----------------------
-  /// @brief
-  /// @param fd
-  /// @param buf
-  /// @return read size
-  int safeRecv(int, char *, int);
+  // ---- cgi ---------------------------------
+  int executeCGI(void);
 
-  /// @brief
-  /// @param fd
-  /// @param response
-  /// @return write size
-  int safeSend(int, Response &);
-
-  /// @brief
-  /// @param buf
-  /// @param size
-  /// @param count
-  /// @param file_ptr
-  /// @return read/write size
-  size_t safeFread(char *, int, int, FILE *);
-  size_t safeFwrite(char *, int, int, FILE *);
-  void safeFopen(const char *, const char *);
+  // --- error class --------------------------
+  class ErrorPage404Exception : public std::exception {
+    virtual const char *what(void) const throw();
+  };
+  class ErrorPage500Exception : public std::exception {
+    virtual const char *what(void) const throw();
+  };
+  class ErrorPage501Exception : public std::exception {
+    virtual const char *what(void) const throw();
+  };
+  class ErrorPageDefaultException : public std::exception {
+    virtual const char *what(void) const throw();
+  };
 };
 
 #endif

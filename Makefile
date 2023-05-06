@@ -22,9 +22,10 @@ CLASS_NAME 	=	Server.cpp \
 UTILS_DIR 	:=	./srcs/utils/
 UTILS_NAME 	=	split.cpp \
 				errorhandler.cpp \
-				hexToInt.cpp \
+				convert.cpp \
 				trim.cpp \
-				printVector.cpp
+				printVector.cpp \
+				safe.cpp
 
 SRC 		=	$(SRC_MAIN) \
 				$(addprefix $(PARSER_DIR),$(PARSER_NAME)) \
@@ -35,16 +36,19 @@ OBJ 		=	$(SRC:.cpp=.o)
 
 INCLUDE		:=	-I./srcs/include/
 CC 			:=	c++
-#CPPFLAGS 	:=	-Wall -Wextra -Werror -std=c++98
+CPPFLAGS 	:=	-Wall -Wextra -Werror -std=c++98
 # CPPFLAGS 	:=	-fsanitize=address -g3
 
 all : $(NAME)
 
 clean :
-	rm -f *.o ./srcs/class/*.o ./srcs/utils/*.o ./srcs/*.o ./srcs/parser/*.o
+	@ rm -f *.o ./srcs/class/*.o ./srcs/utils/*.o ./srcs/*.o ./srcs/parser/*.o
+	@ echo "$(NAME) is $(RED)cleaned$(DFT)"
 
 fclean : clean
-	rm -f $(NAME)
+	@ rm -f $(NAME)
+	@ echo "$(NAME) is $(RED)fcleaned$(DFT)"
+
 
 re : fclean all
 
@@ -54,7 +58,6 @@ $(NAME): $(OBJ)
 
 .PHONY : all clean fclean
 
-#%.c : %.o
-#	$(CC) $(CXXFLAGS) $(INCLUDE) $@ -o $^
 %.o : %.cpp
 	@ $(CC) $(CPPFLAGS) $(INCLUDE) -c $< -o $@
+	

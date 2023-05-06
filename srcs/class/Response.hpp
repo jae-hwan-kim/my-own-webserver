@@ -13,7 +13,7 @@
 #include "../include/include.hpp"
 
 class Response {
-private:
+ private:
   t_step &flag;
   char *response_msg;
   std::string http_version;
@@ -22,42 +22,29 @@ private:
   std::map<std::string, std::string> header;
   std::vector<char> entity;
   size_t response_msg_size;
-  int event_fl;
 
-public:
+ public:
   // ---- constructor -------------------------
   Response(t_step &);
   ~Response();
 
   // ---- getter ------------------------------
-  const std::string getHttpVersion() const;
-  const std::string getStatusCode() const;
-  const std::string getStatusMsg() const;
-  const std::map<std::string, std::string> getHeader() const;
-  const std::vector<char> getEntity() const;
+  const std::string &getHttpVersion() const;
+  const std::string &getStatusCode() const;
+  const std::string &getStatusMsg() const;
+  const std::map<std::string, std::string> &getHeader() const;
+  const std::vector<char> &getEntity() const;
   const char *getResponseMsg() const;
-  const std::string getEntitySize() const;
-  const size_t getResponseMsgSize() const;
+  std::string getEntitySize() const;
+  size_t getResponseMsgSize() const;
 
   // ---- setter ------------------------------
   void setHttpVersion(std::string);
   void setStatus(std::string);
   void setHeader(std::string, std::string);
-  void setEntity(char *, size_t);
+  void setEntity(const char *, size_t);
   void setResponseMsg();
+  void setErrorMsg(std::string, const std::string &);
 };
 
 #endif
-
-/* Response 리턴할 형식
-    <버전> <상태 코드> <상태 메시지>
-    <헤더>
-
-    <엔터티 본문>
-
-    ex)
-    HTTP/1.1 200 OK
-    Date: Mon, 23 May 2005 22:38:34 GMT
-    (CRLF * 2)
-    본문
-*/

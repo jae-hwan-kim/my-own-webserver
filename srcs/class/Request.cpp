@@ -4,10 +4,7 @@
 
 //---- constructor ------------------------------------------------------------
 Request::Request(t_step &flag)
-    : raw_head(""),
-      // head_done(0),
-      // entity_done(false),
-      chunk_size(0), hex_str(""), flag(flag) {
+    : raw_head(""), flag(flag), chunk_size(0), hex_str("") {
   // std::cout << GRY << "Debug: Request::contructor\n" << DFT;
   entity.reserve(256);
 }
@@ -23,25 +20,22 @@ const std::map<std::string, std::string> &Request::getHeader() const {
   return this->header;
 }
 const std::vector<char> &Request::getEntity() const { return this->entity; }
-const size_t Request::getEntitySize() const { return this->entity.size(); }
-const int Request::getContentLength() const {
-  int content_length;
+size_t Request::getEntitySize() const { return this->entity.size(); }
+size_t Request::getContentLength() const {
+  size_t content_length;
   std::stringstream ss;
 
   ss << this->header.find("Content-Length")->second;
   ss >> content_length;
   return content_length;
 }
-// const bool& Request::getHeadDone() const { return this->head_done; }
-// const bool Request::getEntityDone() const { return this->entity_done; }
 
 //---- setter -----------------------------------------------------------------
 void Request::setRawHead(std::string line) { this->raw_head += line; }
 void Request::setFlag(t_step flag) {
   // this->head_done = type;
   this->flag = flag;
-} // status? type?
-// void Request::setEntityDone(bool type) { this->entity_done = type; }
+}  // status? type?
 
 //---- parser -----------------------------------------------------------------
 void Request::parserHead() {
@@ -128,7 +122,7 @@ void Request::toString() const {
   }
   std::cout << GRY << "--------------------- entity -----------------------"
             << DFT << std::endl;
-  for (int i = 0; i < entity.size(); i++) {
+  for (unsigned long i = 0; i < entity.size(); i++) {
     std::cout << YLW << entity[i];
   }
   std::cout << DFT << std::endl;
