@@ -21,11 +21,12 @@ CLASS_NAME 	=	Server.cpp \
 
 UTILS_DIR 	:=	./srcs/utils/
 UTILS_NAME 	=	split.cpp \
-				errorhandler.cpp \
+				print.cpp \
+				file.cpp \
 				convert.cpp \
 				trim.cpp \
-				printVector.cpp \
-				safe.cpp
+				safe.cpp \
+				findSuffix.cpp
 
 SRC 		=	$(SRC_MAIN) \
 				$(addprefix $(PARSER_DIR),$(PARSER_NAME)) \
@@ -36,8 +37,8 @@ OBJ 		=	$(SRC:.cpp=.o)
 
 INCLUDE		:=	-I./srcs/include/
 CC 			:=	c++
-CPPFLAGS 	:=	-Wall -Wextra -Werror -std=c++98
-# CPPFLAGS 	:=	-fsanitize=address -g3
+# CPPFLAGS 	:=	-Wall -Wextra -Werror -std=c++98 -o3
+CPPFLAGS 	:=	-fsanitize=address -g3 -o3
 
 all : $(NAME)
 

@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "../include/define.hpp"
+#include "../include/include.hpp"
 #include "Response.hpp"
 #include "ServerConfig.hpp"
 #include "ServerSocket.hpp"
@@ -31,10 +32,17 @@ class Server {
   // error_status, 시작줄 + 헤더 + 엔티
   std::map<std::string, std::string> error_page;
 
+  bool disconnect;
+
+  Server();
+
  public:
-  // ---- constructor -------------------------
+  // ---- occf --------------------------------
   /// @param server_socket
   Server(std::vector<ServerConfig> &);
+  Server(const Server &ref);
+  Server &operator=(const Server &ref);
+  ~Server();
 
   // ---- error page --------------------------
   void loadErrorPage();
@@ -43,9 +51,10 @@ class Server {
   // ---- main loop ---------------------------
   void run(void);
   void runErrorServer(struct kevent *&);
-  void runReadEventServer(int, std::vector<ServerSocket>::const_iterator);
+  void runReadEventServer(std::vector<ServerSocket>::const_iterator);
   void runReadEventClient(struct kevent *&);
   void runReadEventFile(struct kevent *&);
+  void runWriteEventFile(struct kevent *&curr_event);
   void runWriteEventClient(struct kevent *&);
 
   // ---- utils -------------------------------
@@ -62,12 +71,18 @@ class Server {
 
   /// @brief
   /// @param client_fd
-  /// @param clients
   /// @return
-  void disconnectClient(int, std::map<int, Transaction *> &);
+  void disconnectClient(int);
+
+  void clearFileDescriptor(int client_fd);
 
   // ---- safe_method -------------------------
   int safeKevent(int nevents, const timespec *timeout);
+
+  // ---- exception ---------------------------
+  class ServerUnhealthyException : public std::exception {
+    virtual const char *what(void) const throw();
+  };
 };
 
 #endif
